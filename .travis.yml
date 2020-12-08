@@ -11,10 +11,13 @@ cache:
     - "$HOME/.m2/repository"
     - "$HOME/.local"
 
-jobs:
-  include:
-    - stage: test
-      name: "Test"
-      script:
-        - mvn clean verify
-        - bash <(curl -Ls https://coverage.codacy.com/get.sh) report
+script:
+  - mvn clean verify
+deploy:
+  skip_cleanup: true
+  provider: script
+    script:
+      - bash <(curl -Ls https://coverage.codacy.com/get.sh) report
+  on:
+    branch: master
+    condition: ${TRAVIS_PULL_REQUEST} = false
